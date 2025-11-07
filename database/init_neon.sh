@@ -8,7 +8,16 @@ set -e
 echo "🚀 正在初始化 Neon 数据库..."
 
 # Neon database connection string
-NEON_DB_URL="${NEON_DB_URL:-postgresql://neondb_owner:npg_0UiRFOK1qGml@ep-plain-leaf-a4h7kg5v-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require}"
+# 优先从环境变量读取，如果没有则从 backend/.env 读取
+if [ -z "$NEON_DB_URL" ] && [ -f "../backend/.env" ]; then
+    export NEON_DB_URL=$(grep "^DATABASE_URL=" ../backend/.env | cut -d '=' -f2- | tr -d '"' | tr -d "'")
+fi
+
+if [ -z "$NEON_DB_URL" ]; then
+    echo "❌ 错误: 未找到数据库连接字符串"
+    echo "请设置环境变量 NEON_DB_URL 或在 backend/.env 中配置 DATABASE_URL"
+    exit 1
+fi
 
 # Get the directory of this script
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

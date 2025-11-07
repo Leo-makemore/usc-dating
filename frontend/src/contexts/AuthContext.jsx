@@ -20,13 +20,29 @@ export function AuthProvider({ children }) {
 
   const fetchUser = async () => {
     try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        console.log('[AUTH] No token found, skipping fetchUser')
+        setUser(null)
+        setLoading(false)
+        return
+      }
+      
+      // Ensure token is set in API headers
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      
+      console.log('[AUTH] Fetching user with token:', token.substring(0, 20) + '...')
       const response = await api.get('/api/users/me')
+      console.log('[AUTH] User fetched successfully:', response.data)
       setUser(response.data)
     } catch (error) {
-      console.error('Failed to fetch user:', error)
-      localStorage.removeItem('token')
-      delete api.defaults.headers.common['Authorization']
-      setUser(null)
+      console.error('[AUTH] Failed to fetch user:', error.response?.status, error.response?.data || error.message)
+      // Only clear token if it's a 401 (unauthorized), not other errors
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token')
+        delete api.defaults.headers.common['Authorization']
+        setUser(null)
+      }
     } finally {
       setLoading(false)
     }

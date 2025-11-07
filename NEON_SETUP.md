@@ -14,10 +14,12 @@ cd backend
 
 ```env
 # Database Configuration - Neon Database
-DATABASE_URL=postgresql://neondb_owner:npg_0UiRFOK1qGml@ep-plain-leaf-a4h7kg5v-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+# 从 Neon Console 获取连接字符串: https://console.neon.tech/
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require
 
 # JWT Configuration (使用下面的命令生成)
-SECRET_KEY=c33432841cb5b236e0b7de1dc99c504a9c801f4446999a3e5c4c86169deba7d6
+# 生成命令: openssl rand -hex 32
+SECRET_KEY=your-secret-key-here
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 
@@ -41,8 +43,11 @@ PORT=8000
 ```bash
 cd backend
 cat > .env << 'EOF'
-DATABASE_URL=postgresql://neondb_owner:npg_0UiRFOK1qGml@ep-plain-leaf-a4h7kg5v-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
-SECRET_KEY=c33432841cb5b236e0b7de1dc99c504a9c801f4446999a3e5c4c86169deba7d6
+# 从 Neon Console 获取: https://console.neon.tech/
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require
+
+# 生成命令: openssl rand -hex 32
+SECRET_KEY=your-secret-key-here
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 FRONTEND_URL=http://localhost:5173
@@ -63,7 +68,9 @@ cd database
 **或者手动运行：**
 
 ```bash
-psql 'postgresql://neondb_owner:npg_0UiRFOK1qGml@ep-plain-leaf-a4h7kg5v-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require' -f schema.sql
+# 从 .env 文件中读取 DATABASE_URL
+source backend/.env
+psql "$DATABASE_URL" -f database/schema.sql
 ```
 
 ## 步骤 3: 启动后端
@@ -93,7 +100,9 @@ npm run dev
 你可以测试数据库连接：
 
 ```bash
-psql 'postgresql://neondb_owner:npg_0UiRFOK1qGml@ep-plain-leaf-a4h7kg5v-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require' -c "\dt"
+# 从 .env 文件中读取 DATABASE_URL
+source backend/.env
+psql "$DATABASE_URL" -c "\dt"
 ```
 
 这会列出所有表，确认表已经创建成功。

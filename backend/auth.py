@@ -72,8 +72,16 @@ def decode_access_token(token: str) -> Optional[dict]:
         Decoded token payload or None if invalid
     """
     try:
+        if not settings.SECRET_KEY:
+            print("[AUTH] ERROR: SECRET_KEY is not set!")
+            return None
+        
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         return payload
-    except JWTError:
+    except JWTError as e:
+        print(f"[AUTH] Token decode error: {type(e).__name__}: {e}")
+        return None
+    except Exception as e:
+        print(f"[AUTH] Unexpected error decoding token: {type(e).__name__}: {e}")
         return None
 

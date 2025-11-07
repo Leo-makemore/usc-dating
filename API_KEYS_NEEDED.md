@@ -55,7 +55,10 @@ FROM_EMAIL=noreply@yourdomain.com
 
 **后端** (`backend/.env`):
 ```env
-DATABASE_URL=postgresql://neondb_owner:npg_0UiRFOK1qGml@ep-plain-leaf-a4h7kg5v-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+# 从 Neon Console 获取: https://console.neon.tech/
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require
+
+# 生成命令: openssl rand -hex 32
 SECRET_KEY=your-secret-key-here
 HOST=0.0.0.0
 PORT=8000

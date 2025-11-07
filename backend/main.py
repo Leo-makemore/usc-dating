@@ -387,13 +387,17 @@ async def register_step2(
         )
     
     # Verify temp token
+    print(f"[REGISTER STEP2] Attempting to decode token: {temp_token[:30]}...")
     payload = decode_access_token(temp_token)
     if not payload:
-        print(f"[REGISTER STEP2] Token decode failed for token: {temp_token[:20]}...")
+        print(f"[REGISTER STEP2] Token decode failed. Token length: {len(temp_token)}")
+        print(f"[REGISTER STEP2] SECRET_KEY configured: {bool(settings.SECRET_KEY)}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired registration token. Please try registering again."
         )
+    
+    print(f"[REGISTER STEP2] Token decoded successfully. Payload: {payload}")
     
     if payload.get("step") != "register_step2":
         print(f"[REGISTER STEP2] Token step mismatch. Expected 'register_step2', got: {payload.get('step')}")

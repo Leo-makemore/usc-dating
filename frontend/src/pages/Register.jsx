@@ -106,11 +106,18 @@ export default function Register() {
       console.log('Step 2 response:', response.data)
       
       // Store token and navigate
-      const accessToken = response.data.access_token || tempToken
+      const accessToken = response.data.access_token
+      if (!accessToken) {
+        throw new Error('No access token received from server')
+      }
+      
       localStorage.setItem('token', accessToken)
       api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
       
-      navigate('/app/matches')
+      // Wait a bit to ensure token is set, then navigate
+      setTimeout(() => {
+        navigate('/app/matches')
+      }, 100)
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to complete registration')
     } finally {

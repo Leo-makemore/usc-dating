@@ -53,7 +53,9 @@ Neon 是一个 Serverless PostgreSQL 服务，特点：
 
 ### 方式 2: 使用 psql 命令行
 ```bash
-psql 'postgresql://neondb_owner:npg_0UiRFOK1qGml@ep-plain-leaf-a4h7kg5v-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
+# 从 backend/.env 文件中获取 DATABASE_URL
+psql "$DATABASE_URL"
+# 或者直接使用连接字符串（请从 .env 文件中复制）
 ```
 
 ### 方式 3: 使用数据库管理工具
